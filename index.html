@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pengurusan Pekeliling BPI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for zebra striping and hover effects */
+        tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        tbody tr:hover {
+            background-color: #f3f4f6;
+        }
+        
+        /* Toggle column visibility */
+        body.show-title-only #pekeliling-table th:not(:last-child),
+        body.show-title-only #pekeliling-table td:not(:last-child) {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans text-gray-800 min-h-screen show-title-only">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-slate-800 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <div class="flex items-center justify-between h-16">
+                
+                <!-- Logo, Title & Pekeliling Am Negeri Johor side-by-side -->
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span class="font-medium text-xs md:text-sm">Pekeliling Bpi</span>
+                    </div>
+
+                    <a href="https://www.johor.gov.my/perkhidmatan/arkib-hebahan/pekeliling#toggle-id-1" target="_blank" rel="noopener noreferrer" 
+                       class="flex items-center gap-2 px-3 py-2 text-xs md:text-sm font-medium bg-slate-700 hover:bg-slate-600 text-slate-100 hover:text-white rounded-md transition-all duration-200 border border-slate-600">
+                        <span>Pekeliling Am Negeri Johor</span>
+                        <!-- External Link Icon -->
+                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
+                    
+                    <a href="https://pnj.johor.gov.my/pekeliling/" target="_blank" rel="noopener noreferrer" 
+                       class="flex items-center gap-2 px-3 py-2 text-xs md:text-sm font-medium bg-slate-700 hover:bg-slate-600 text-slate-100 hover:text-white rounded-md transition-all duration-200 border border-slate-600">
+                        <span>Pekeliling Bendahari Johor</span>
+                        <!-- External Link Icon -->
+                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
+                </div>
+
+                <!-- Right Menu (Empty space balancer if needed) -->
+                <div class="flex items-center">
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto space-y-6 p-4 md:p-8">
+        
+        <!-- Header Section -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden p-6 border border-slate-200">
+            <div class="border-b border-gray-100 pb-4 mb-4">
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Sistem Pengurusan Pekeliling</h1>
+                <p class="text-slate-500 mt-1">Bahagian Pendidikan Islam</p>
+            </div>
+
+            <!-- Search Panel -->
+            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <h2 class="text-sm font-semibold text-slate-700 mb-3 uppercase tracking-wider">Carian Terperinci</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- Search by No -->
+                    <div>
+                        <label for="search-no" class="block text-xs font-medium text-gray-600 mb-1">No Pekeliling</label>
+                        <input type="text" id="search-no" placeholder="Contoh: 12" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    </div>
+
+                    <!-- Search by Tahun -->
+                    <div>
+                        <label for="search-tahun" class="block text-xs font-medium text-gray-600 mb-1">Tahun</label>
+                        <input type="text" id="search-tahun" placeholder="Contoh: 2004" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    </div>
+
+                    <!-- Search by Pekeliling -->
+                    <div>
+                        <label for="search-pekeliling" class="block text-xs font-medium text-gray-600 mb-1">Bilangan</label>
+                        <input type="text" id="search-pekeliling" placeholder="Contoh: Bil 1 Tahun 2004" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    </div>
+
+                    <!-- Search by Tajuk -->
+                    <div>
+                        <label for="search-tajuk" class="block text-xs font-medium text-gray-600 mb-1">Tajuk</label>
+                        <input type="text" id="search-tajuk" placeholder="Kata kunci tajuk..." 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    </div>
+
+                </div>
+                
+                <div class="mt-4 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-slate-200 pt-4">
+                    <p class="text-xs text-gray-500 w-full md:w-auto text-left" id="result-count">Menunjukkan semua rekod.</p>
+                    
+                    <div class="flex items-center justify-between w-full md:w-auto gap-4">
+                        <!-- Toggle Papar Tajuk Sahaja -->
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="toggle-view" class="sr-only peer" checked>
+                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            <span class="ml-3 text-sm font-medium text-gray-700 whitespace-nowrap">Papar Tajuk Sahaja</span>
+                        </label>
+
+                        <button onclick="resetSearch()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-medium rounded-md transition-colors duration-200">
+                            Set Semula
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left" id="pekeliling-table">
+                    <thead class="text-xs text-slate-600 uppercase bg-slate-100 border-b border-slate-200">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 font-bold">Bil</th>
+                            <th scope="col" class="px-6 py-4 font-bold">No</th>
+                            <th scope="col" class="px-6 py-4 font-bold">Tahun</th>
+                            <th scope="col" class="px-6 py-4 font-bold">Bilangan</th>
+                            <th scope="col" class="px-6 py-4 font-bold">Tajuk</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Data rows from the previous artifact -->
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">2</td>
+                            <td class="px-6 py-4">12</td>
+                            <td class="px-6 py-4">1988</td>
+                            <td class="px-6 py-4">Bil 12 Tahun 1988</td>
+                            <td class="px-6 py-4">Larangan Menjalankan Jualan Terus Di Sekolah</td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">1</td>
+                            <td class="px-6 py-4">6 & 7</td>
+                            <td class="px-6 py-4">1995</td>
+                            <td class="px-6 py-4">Bil 6 & 7 Tahun 1995</td>
+                            <td class="px-6 py-4">Membudayakan Al Quran</td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">3</td>
+                            <td class="px-6 py-4">4</td>
+                            <td class="px-6 py-4">2002</td>
+                            <td class="px-6 py-4">Bil 4 Tahun 2002</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/02%20Bil%204%20Tahun%202002%20Perubahan%20Matapelajaran%20Darjah%204%20%205.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Perubahan Matapelajaran Darjah 4 & 5</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">5</td>
+                            <td class="px-6 py-4">6</td>
+                            <td class="px-6 py-4">2003</td>
+                            <td class="px-6 py-4">Bil 6 Tahun 2003</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/03_BIL_6_TAHUN_2003_BAB_A_C_PENTADBIRAN_TUGAS_GURU_PERATURAN_AM.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Bab A-C Pentadbiran_Tugas Guru_Peraturan Am</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">4</td>
+                            <td class="px-6 py-4">123</td>
+                            <td class="px-6 py-4">2003</td>
+                            <td class="px-6 py-4">Bil 123 Tahun 2003</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/03_Bil_123_Tahun_2003_Pakaian_Seragam.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Pakaian Seragam Dan Cara Berpakaian Bagi Anggota Perkhidmatan Awam</a></td>
+                        </tr>
+                        
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">6</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2004</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2004</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/04%20BIL%201%20TAHUN%202004%20BAB%20D%20PERATURAN%20KEMASUKAN%20MURID%20SAKJ.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Bab D Peraturan Kemasukan Murid SAKJ</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">7</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2004</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2004</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/04%20BIL%201%20TAHUN%202004%20BAB%20E%20PERATURAN%20PENGURUSAN%20DARJAH%20KHAS.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Bab E Peraturan Pengurusan Darjah Khas</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">8</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2004</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2004</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/04%20BIL%201%20TAHUN%202004%20BAB%20F%20PERATURAN%20PEP%20SDEA%20%20SDKA.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Bab F Peraturan Pep SDEA & SDKA</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">9</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2004</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2004</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/04%20BIL%201%20TAHUN%202004%20BAB%20G%20PROGRAM%20PENGAJIAN%20ISLAM%20GURU%20SAKJ.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Bab G Program Pengajian Islam Guru SAKJ</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">10</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2004</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2004</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/04_BIL_1_TAHUN_2004_BAB_H_KEMASUKAN_TAHUN_1__PERATURAN_AM_SRAB.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Bab H Kemasukan Tahun 1 & Peraturan Am SRAB</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">11</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2004</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2004</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/04%20Bil%201%20Tahun%202004%20Sukatan%20Ibadat%202%20Darjah%206.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Sukatan Ibadat 2 Darjah 6</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">12</td>
+                            <td class="px-6 py-4">4</td>
+                            <td class="px-6 py-4">2004</td>
+                            <td class="px-6 py-4">Bil 4 Tahun 2004</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/Johor%20-%20Enakmen%20Pentadbiran%20terkini.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Kebenaran Rasmi Memungut Yuran Sekolah Agama Prosedur Pengawalan Kewangan Sekolah</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">13</td>
+                            <td class="px-6 py-4">2</td>
+                            <td class="px-6 py-4">2005</td>
+                            <td class="px-6 py-4">Bil 2 Tahun 2005</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/05%20Bil%202%20Tahun%202005%20PKPA%20-%20Petunjuk%20Prestasi%20KPI.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">PKPA - Petunjuk Prestasi (KPI)</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">14</td>
+                            <td class="px-6 py-4">4</td>
+                            <td class="px-6 py-4">2005</td>
+                            <td class="px-6 py-4">Bil 4 Tahun 2005</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/05%20Bil%204%20Tahun%202005%20Penetapan%20Cuti%20Peristiwa.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Penetapan Cuti Peristiwa</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">15</td>
+                            <td class="px-6 py-4">7</td>
+                            <td class="px-6 py-4">2005</td>
+                            <td class="px-6 py-4">Bil 7 Tahun 2005</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/05%20Bil%207%20Tahun%202005%20Sukatan%20Baru%20Darjah%20Khas.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Sukatan Baru Darjah Khas</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">16</td>
+                            <td class="px-6 py-4">8</td>
+                            <td class="px-6 py-4">2005</td>
+                            <td class="px-6 py-4">Bil 8 Tahun 2005</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/05%20Bil%208%20Tahun%202005%20Melengkapkan%20Persediaan%20mengajar.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Melengkapkan Persediaan mengajar</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">17</td>
+                            <td class="px-6 py-4">12</td>
+                            <td class="px-6 py-4">2007</td>
+                            <td class="px-6 py-4">Bil 12 Tahun 2007</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/07_Bil_12_Tahun_2007_Elaun_Mengikut.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Elaun Mengikut Lokasi Dan Tahap Kesusahan Bagi Guru SAKJ</a></td>
+                        </tr>
+                        
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">18</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2008</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2008</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/08_Bil_1_Tahun_2008_Panduan_Pakaian.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Panduan Pakaian Pegawai Perkhidmatan Pendidikan Semasa Melaksanakan Proses Pengajaran Dan Pembelajaran</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">19</td>
+                            <td class="px-6 py-4">-</td>
+                            <td class="px-6 py-4">2008</td>
+                            <td class="px-6 py-4">Tahun 2008</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/Peraturan%20Pembukaan%20Kelas%20Tadika%201.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Peraturan Pembukaan Kelas TAJ 1</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">21</td>
+                            <td class="px-6 py-4">-</td>
+                            <td class="px-6 py-4">2008</td>
+                            <td class="px-6 py-4">Tahun 2008</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/08%20Tahun%202008%20Perubahan%20Kurikulum%20Darjah%201.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Perubahan Kurikulum Darjah 1</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">22</td>
+                            <td class="px-6 py-4">-</td>
+                            <td class="px-6 py-4">2008</td>
+                            <td class="px-6 py-4">Tahun 2008</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/08%20Tahun%202008%20Perubahan%20Kurikulum%20Darjah%202.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Perubahan Kurikulum Darjah 2</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">23</td>
+                            <td class="px-6 py-4">-</td>
+                            <td class="px-6 py-4">2008</td>
+                            <td class="px-6 py-4">Tahun 2008</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/08%20Tahun%202008%20Perubahan%20Kurikulum%20Darjah%204.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Perubahan Kurikulum Darjah 4</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">24</td>
+                            <td class="px-6 py-4">-</td>
+                            <td class="px-6 py-4">2008</td>
+                            <td class="px-6 py-4">Tahun 2008</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/08%20Tahun%202008%20Perubahan%20Kurikulum%20Darjah%205.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Perubahan Kurikulum Darjah 5</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">25</td>
+                            <td class="px-6 py-4">5</td>
+                            <td class="px-6 py-4">2009</td>
+                            <td class="px-6 py-4">Bil 5 Tahun 2009</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/P2013%20-%20PINDAAN%20HARI%20PEMAKAIAN%20BATIK%20MALAYSIA.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Pindaan Pekeliling Bil 1 Tahun 2008 Panduan Pemakaian Pegawai Awam</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">26</td>
+                            <td class="px-6 py-4">5</td>
+                            <td class="px-6 py-4">2009</td>
+                            <td class="px-6 py-4">
+                                Bil 5 Tahun 2009<br>
+                                Bil 6 Tahun 2009
+                            </td>
+                            <td class="px-6 py-4">
+                                <a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/09_Bil_5_Tahun_2009_Tambahan_Setengah.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium block mb-1" target="_blank">Tambahan Setengah Jam Masa PDP Darjah Khas</a>
+                                <a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/09_Bil_5_Tahun_2009_Tambahan_Setengah.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium block" target="_blank">Panduan Pengurusan Displin Pelajar Sekolah Agama Negeri Johor</a>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">27</td>
+                            <td class="px-6 py-4">4</td>
+                            <td class="px-6 py-4">2010</td>
+                            <td class="px-6 py-4">Bil 4 Tahun 2010</td>
+                            <td class="px-6 py-4">Pelaksanaan Pendidikan Pemahaman Al-Quran Dan Perubahan Pertemuan Kurikulum 4,5 & 6</td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">28</td>
+                            <td class="px-6 py-4">4</td>
+                            <td class="px-6 py-4">2010</td>
+                            <td class="px-6 py-4">Bil 4 Tahun 2010</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/10%20Bil%204%20Tahun%202010%20Pindaan%20Akademik.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Pindaan Akademik</a></td>
+                        </tr>
+                        
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">29</td>
+                            <td class="px-6 py-4">7</td>
+                            <td class="px-6 py-4">2010</td>
+                            <td class="px-6 py-4">Bil 7 Tahun 2010</td>
+                            <td class="px-6 py-4">Bidang Kuasa Pengurusan Penempatan Dan Pertukaran Guru Di Bawah Sektor Operasi Pendidikan (SOP)</td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">30</td>
+                            <td class="px-6 py-4">123</td>
+                            <td class="px-6 py-4">2010</td>
+                            <td class="px-6 py-4">Bil 123 Tahun 2010</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/10_Bil_123_Tahun_2010_Pakaian_Seragam.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Pakaian Seragam Dan Cara Berpakaian Bagi Anggota Perkhidmatan Awam</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">31</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2013</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2013</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/13_Bil_1_Tahun_2013_Penggunaan_Lafaz.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Penggunaan Lafaz Salam (Tulisan Jawi) Dalam Surat Rasmi</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">32</td>
+                            <td class="px-6 py-4">2</td>
+                            <td class="px-6 py-4">2013</td>
+                            <td class="px-6 py-4">Bil 2 Tahun 2013</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/13_Bil_1_Tahun_2013_Penggunaan_Lafaz.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Pelaksanaan Skim Insentif Tahfiz</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">33</td>
+                            <td class="px-6 py-4">4</td>
+                            <td class="px-6 py-4">2013</td>
+                            <td class="px-6 py-4">Bil 4 Tahun 2013</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/13_Bil_1_Tahun_2013_Penggunaan_Lafaz.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Penyelarasan Hari Bekerja Jumaat Kepada Hari Ahad</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">34</td>
+                            <td class="px-6 py-4">-</td>
+                            <td class="px-6 py-4">2013</td>
+                            <td class="px-6 py-4">Tahun 2013</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/13_Bil_1_Tahun_2013_Penggunaan_Lafaz.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Kertas Cadangan Menubuhkan Kelas Khas Di SA Khusnul Khatimah Kluang</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">35</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2014</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2014</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/14%20Bil%201%20Tahun%202014%20Pakaian%20Rasmi%20Murid.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Pakaian Rasmi Murid</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">36</td>
+                            <td class="px-6 py-4">2</td>
+                            <td class="px-6 py-4">2015</td>
+                            <td class="px-6 py-4">Bil 2 Tahun 2015</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/Panduan%20Penulisan%20Persediaan%20Mengajar%20SAKJ%20Bagi%20Guru%20KAFA.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Panduan Penulisan Persediaan Mengajar SAKJ</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">37</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2016</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2016</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/protokol%20bendera.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Protokol Bendera Johor Dan Daerah</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">38</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2017</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2017</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/SR.2-KEMUDAHAN-PERUBATAN.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank" rel="noopener">Penambahbaikan Peraturan Pelaksanaan Kemudahan Perubatan</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">39</td>
+                            <td class="px-6 py-4">11</td>
+                            <td class="px-6 py-4">2017</td>
+                            <td class="px-6 py-4">Bil 11 Tahun 2017</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/kebenaran%20pulang%20awal%20isteri%20mengandung.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Pelaksanaan Kebenaran Pulang Awal 1 Jam Kepada Pegawai Wanita Mengandung Dan Suami Yang Berdekatan</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">40</td>
+                            <td class="px-6 py-4">2</td>
+                            <td class="px-6 py-4">2017</td>
+                            <td class="px-6 py-4">Bil 2 Tahun 2017</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/KebenaranGantianCutiRehat150.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Kebenaran Menggunakan Gantian Cuti Rehat (GCR) Yang Melebihi 150 Hari</a></td>
+                        </tr>
+                        
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">41</td>
+                            <td class="px-6 py-4">2</td>
+                            <td class="px-6 py-4">2017</td>
+                            <td class="px-6 py-4">Bil 2 Tahun 2017</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/17%20Bil%202%20Tahun%202017%20Panduan%20Persediaan%20Komputer.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Panduan Persediaan Komputer</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">42</td>
+                            <td class="px-6 py-4">3</td>
+                            <td class="px-6 py-4">2017</td>
+                            <td class="px-6 py-4">Bil 3 Tahun 2017</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/17%20Bil%203%20Tahun%202017%20Kemudahan%20Cuti%20Umrah.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Kemudahan Cuti Umrah</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">43</td>
+                            <td class="px-6 py-4">3</td>
+                            <td class="px-6 py-4">2017</td>
+                            <td class="px-6 py-4">Bil 3 Tahun 2017</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/17_Bil_3_Tahun_2017_Penetapan_Rancangan.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Penetapan Rancangan Pelajaran Tahunan SAKJ</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">44</td>
+                            <td class="px-6 py-4">4</td>
+                            <td class="px-6 py-4">2017</td>
+                            <td class="px-6 py-4">Bil 4 Tahun 2017</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/17_Bil_4_Tahun_2017_Kurikulum_Standard.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Kurikulum Standard Di Sekolah Agama (KSSA)</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">45</td>
+                            <td class="px-6 py-4">5</td>
+                            <td class="px-6 py-4">2017</td>
+                            <td class="px-6 py-4">Bil 5 Tahun 2017</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/cuti%20bersalin.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Kemudahan Cuti Bersalin Pegawai Perkhidmatan Awam</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">46</td>
+                            <td class="px-6 py-4">8</td>
+                            <td class="px-6 py-4">2017</td>
+                            <td class="px-6 py-4">Bil 8 Tahun 2017</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/17_Bil_8_Tahun_2017_Cuti_Rehat_Khas.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Cuti Rehat Khas Pegawai Perkhidmatan Pendidikan</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">47</td>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4">2018</td>
+                            <td class="px-6 py-4">Bil 1 Tahun 2018</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/18_Bil_1_Tahun_2018_Penetapan_Minggu.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Penetapan Minggu Bagi Pelaksanaan PDP SAKJ</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">49</td>
+                            <td class="px-6 py-4">2</td>
+                            <td class="px-6 py-4">2018</td>
+                            <td class="px-6 py-4">Bil 2 Tahun 2018</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/18_Bil_2_Tahun_2018_Penetapan_Kadar.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Penetapan Kadar Yuran Peperiksaan SIB, SMRA, SMA, STAM Dan MUET</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">50</td>
+                            <td class="px-6 py-4">3</td>
+                            <td class="px-6 py-4">2018</td>
+                            <td class="px-6 py-4">Bil 3 Tahun 2018</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/18_Bil_3_Tahun_2018_Penetapan_Kaedah.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Penetapan Kaedah Baru Pemarkahan Dan Pemberian Sijil SDKA</a></td>
+                        </tr>
+                        <tr class="border-b border-slate-100 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">51</td>
+                            <td class="px-6 py-4">5</td>
+                            <td class="px-6 py-4">2018</td>
+                            <td class="px-6 py-4">Bil 5 Tahun 2018</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/B00156%20-%20KURIKULUM%20STANDARD%20SAKJ%202018.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Kurikulum Standard SAKJ 2018</a></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 font-medium text-slate-900">82</td>
+                            <td class="px-6 py-4">-</td>
+                            <td class="px-6 py-4">2017</td>
+                            <td class="px-6 py-4">-</td>
+                            <td class="px-6 py-4"><a href="https://ppidkluang.com/images/ppid/pekeliling%20bpi/S00231_PEMASANGAN_BENDERA_SEMASA_ULANG_TAHUN_KEPUTERAAN_SULTAN_JOHOR.pdf" class="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank">Panduan Susunan Bendera Terkini</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- No Results Message -->
+                <div id="no-results" class="hidden p-8 text-center text-gray-500">
+                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-lg">Tiada pekeliling dijumpai.</p>
+                    <p class="text-sm">Sila ubah kata kunci carian anda.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Get all input elements
+            const searchNo = document.getElementById('search-no');
+            const searchTahun = document.getElementById('search-tahun');
+            const searchPekeliling = document.getElementById('search-pekeliling');
+            const searchTajuk = document.getElementById('search-tajuk');
+            
+            // Get table elements
+            const tableRows = document.querySelectorAll('#table-body tr');
+            const noResultsMessage = document.getElementById('no-results');
+            const resultCountText = document.getElementById('result-count');
+            const toggleView = document.getElementById('toggle-view');
+            const totalRows = tableRows.length;
+
+            // Handle toggle view
+            toggleView.addEventListener('change', (e) => {
+                if(e.target.checked) {
+                    document.body.classList.add('show-title-only');
+                } else {
+                    document.body.classList.remove('show-title-only');
+                }
+            });
+
+            // Initialize total count text
+            resultCountText.textContent = `Menunjukkan semua ${totalRows} rekod.`;
+
+            // Function to filter the table
+            function filterTable() {
+                // Get current search values, converted to lowercase for case-insensitive matching
+                const filterNo = searchNo.value.toLowerCase();
+                const filterTahun = searchTahun.value.toLowerCase();
+                const filterPekeliling = searchPekeliling.value.toLowerCase();
+                const filterTajuk = searchTajuk.value.toLowerCase();
+
+                let visibleCount = 0;
+
+                // Loop through all table rows
+                tableRows.forEach(row => {
+                    // Extract text from specific columns (Indices: 1=No, 2=Tahun, 3=Pekeliling, 4=Tajuk)
+                    const textNo = row.cells[1].textContent.toLowerCase();
+                    const textTahun = row.cells[2].textContent.toLowerCase();
+                    const textPekeliling = row.cells[3].textContent.toLowerCase();
+                    const textTajuk = row.cells[4].textContent.toLowerCase();
+
+                    // Check if current row matches ALL active filters
+                    const matchesNo = textNo.includes(filterNo);
+                    const matchesTahun = textTahun.includes(filterTahun);
+                    const matchesPekeliling = textPekeliling.includes(filterPekeliling);
+                    const matchesTajuk = textTajuk.includes(filterTajuk);
+
+                    if (matchesNo && matchesTahun && matchesPekeliling && matchesTajuk) {
+                        row.style.display = ''; // Show row
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none'; // Hide row
+                    }
+                });
+
+                // Update UI based on results count
+                if (visibleCount === 0) {
+                    noResultsMessage.classList.remove('hidden');
+                    resultCountText.textContent = `0 rekod dijumpai.`;
+                } else {
+                    noResultsMessage.classList.add('hidden');
+                    if (visibleCount === totalRows) {
+                        resultCountText.textContent = `Menunjukkan semua ${totalRows} rekod.`;
+                    } else {
+                        resultCountText.textContent = `Menunjukkan ${visibleCount} daripada ${totalRows} rekod.`;
+                    }
+                }
+            }
+
+            // Attach event listeners to trigger filtering on keyup
+            searchNo.addEventListener('keyup', filterTable);
+            searchTahun.addEventListener('keyup', filterTable);
+            searchPekeliling.addEventListener('keyup', filterTable);
+            searchTajuk.addEventListener('keyup', filterTable);
+
+            // Global reset function
+            window.resetSearch = function() {
+                searchNo.value = '';
+                searchTahun.value = '';
+                searchPekeliling.value = '';
+                searchTajuk.value = '';
+                filterTable();
+            };
+        });
+    </script>
+</body>
+</html>
